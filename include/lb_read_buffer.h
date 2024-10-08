@@ -149,6 +149,10 @@ inline LB_ReadBufferReadError lbReadBufferReadReversed(LB_ReadBuffer *buffer, co
     return lbReadBufferReadReversedUnsafe(buffer, length, out_value);
 }
 
+inline size_t lbReadBufferRemaining(const LB_ReadBuffer *buffer) {
+    return buffer->length - buffer->position;
+}
+
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #define lbReadBufferLE lbReadBufferRead
 #define lbReadBufferBE lbReadBufferReadReversed
@@ -619,6 +623,7 @@ LB_ReadBufferReadError lbReadBufferReadUnsafe(LB_ReadBuffer *buffer, size_t leng
 LB_ReadBufferReadError lbReadBufferRead(LB_ReadBuffer *buffer, size_t length, void* out_value);
 LB_ReadBufferReadError lbReadBufferReadReversedUnsafe(LB_ReadBuffer *buffer, size_t length, void* out_value);
 LB_ReadBufferReadError lbReadBufferReadReversed(LB_ReadBuffer *buffer, size_t length, void* out_value);
+size_t lbReadBufferRemaining(const LB_ReadBuffer *buffer);
 uint8_t lbReadBufferU8(LB_ReadBuffer *buffer, LB_ReadBufferReadError* out_error);
 uint8_t lbReadBufferU8LE(LB_ReadBuffer *buffer, LB_ReadBufferReadError* out_error);
 uint8_t lbReadBufferU8BE(LB_ReadBuffer *buffer, LB_ReadBufferReadError* out_error);

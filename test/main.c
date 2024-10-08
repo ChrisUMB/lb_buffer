@@ -7,10 +7,32 @@
 #define LB_FILE_IMPLEMENTATION
 #include "lb_file.h"
 
+#define LB_PAGED_ARENA_IMPLEMENTATION
+#include "lb_paged_arena.h"
+
 #include <stdlib.h>
 #include <math.h>
 
 int main(int argc, char *argv[]) {
+    LB_PagedArena *arena = lbPagedArenaNew(64);
+    if (!arena) {
+        printf("Failed to create paged arena\n");
+        return 1;
+    }
+
+    for(int i = 0; i < 10; i++) {
+        void* data = lbPagedArenaAlloc(arena, 32);
+        if (!data) {
+            printf("(%d) Failed to allocate memory\n", i);
+            return 1;
+        }
+
+        printf("(%d) Allocated memory at %p\n", i, data);
+    }
+}
+
+
+int maign(int argc, char *argv[]) {
     char data[1024] = {0};
 
     LB_WriteBuffer buffer;

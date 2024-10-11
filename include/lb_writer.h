@@ -4,6 +4,7 @@
 #ifdef __cplusplus
 #include <cstring>
 #include <cstdint>
+#include <cstdio>
 extern "C" {
 #else
 #include <string.h>
@@ -34,6 +35,40 @@ typedef enum LB_WriterInitError {
     LB_WRITER_INIT_LENGTH_ZERO = 0x8,
 } LB_WriterInitError;
 
+inline const char* lbWriterInitErrorName(const LB_WriterInitError e) {
+    switch (e) {
+        case LB_WRITER_INIT_NONE:
+            return "LB_WRITER_INIT_NONE";
+        case LB_WRITER_INIT_DATA_NULL:
+            return "LB_WRITER_INIT_DATA_NULL";
+        case LB_WRITER_INIT_NO_WRITER:
+            return "LB_WRITER_INIT_NO_WRITER";
+        case LB_WRITER_INIT_INVALID_FILE:
+            return "LB_WRITER_INIT_INVALID_FILE";
+        case LB_WRITER_INIT_LENGTH_ZERO:
+            return "LB_WRITER_INIT_LENGTH_ZERO";
+        default:
+            return "LB_WRITER_INIT_UNKNOWN";
+    }
+}
+
+inline const char* lbWriterInitErrorMessage(const LB_WriterInitError e) {
+    switch (e) {
+        case LB_WRITER_INIT_NONE:
+            return "No error.";
+        case LB_WRITER_INIT_DATA_NULL:
+            return "The data is NULL.";
+        case LB_WRITER_INIT_NO_WRITER:
+            return "The writer is NULL.";
+        case LB_WRITER_INIT_INVALID_FILE:
+            return "The file is invalid.";
+        case LB_WRITER_INIT_LENGTH_ZERO:
+            return "The length is zero.";
+        default:
+            return "Unknown error.";
+    }
+}
+
 // Error codes for `lbWriter` methods.
 typedef enum LB_WriterError {
     // No error.
@@ -48,6 +83,40 @@ typedef enum LB_WriterError {
     // The value is invalid.
     LB_WRITER_ERROR_INVALID_VALUE = 0x8,
 } LB_WriterError;
+
+inline const char* lbWriterErrorName(const LB_WriterError e) {
+    switch (e) {
+        case LB_WRITER_ERROR_NONE:
+            return "LB_WRITER_ERROR_NONE";
+        case LB_WRITER_ERROR_FULL:
+            return "LB_WRITER_ERROR_FULL";
+        case LB_WRITER_ERROR_WRITER_NULL:
+            return "LB_WRITER_ERROR_WRITER_NULL";
+        case LB_WRITER_ERROR_DATA_NULL:
+            return "LB_WRITER_ERROR_DATA_NULL";
+        case LB_WRITER_ERROR_INVALID_VALUE:
+            return "LB_WRITER_ERROR_INVALID_VALUE";
+        default:
+            return "LB_WRITER_ERROR_UNKNOWN";
+    }
+}
+
+inline const char* lbWriterErrorMessage(const LB_WriterError e) {
+    switch (e) {
+        case LB_WRITER_ERROR_NONE:
+            return "No error.";
+        case LB_WRITER_ERROR_FULL:
+            return "The writer is full.";
+        case LB_WRITER_ERROR_WRITER_NULL:
+            return "The writer is NULL.";
+        case LB_WRITER_ERROR_DATA_NULL:
+            return "The data is NULL.";
+        case LB_WRITER_ERROR_INVALID_VALUE:
+            return "The value is invalid.";
+        default:
+            return "Unknown error.";
+    }
+}
 
 typedef struct LB_WriterBuffer {
     const void *data;
@@ -582,6 +651,12 @@ inline LB_WriterError lbWriteNI64BE(LB_Writer *writer, const double value) {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+const char* lbWriterInitErrorName(const LB_WriterInitError e);
+const char* lbWriterInitErrorMessage(const LB_WriterInitError e);
+const char* lbWriterErrorName(const LB_WriterError e);
+const char* lbWriterErrorMessage(const LB_WriterError e);
+
 LB_WriterInitError lbWriterInitBuffer(LB_Writer *writer, void *data, size_t length);
 LB_WriterInitError lbWriterInitFile(LB_Writer *writer, FILE *file);
 #ifdef LB_WRITER_SAFETY

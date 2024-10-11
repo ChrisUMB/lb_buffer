@@ -8,6 +8,7 @@ extern "C" {
 #else
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 #endif
 
 #ifndef LB_WRITER_NO_SAFETY

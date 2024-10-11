@@ -10,10 +10,24 @@
 #define LB_PAGED_ARENA_IMPLEMENTATION
 #include "lb_paged_arena.h"
 
+#define LB_BUFFER_IMPLEMENTATION
+#include "lb_buffer.h"
+
+#define LB_READER_IMPLEMENTATION
+#include "lb_reader.h"
+
 #include <stdlib.h>
 #include <math.h>
 
 int main(int argc, char *argv[]) {
+    LB_Reader reader;
+    FILE* file = fopen("test.bin", "rb");
+    lbReadInitFile(&reader, file);
+    float f32 = lbReadF32(&reader, NULL);
+    printf("F32: %f\n", f32);
+}
+
+int mahin(int argc, char *argv[]) {
     LB_PagedArena *arena = lbPagedArenaNew(64);
     if (!arena) {
         printf("Failed to create paged arena\n");

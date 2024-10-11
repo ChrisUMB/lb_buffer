@@ -192,13 +192,44 @@ inline LB_WriterError lbWriterSeek(LB_Writer *writer, const size_t position) {
     return LB_WRITER_ERROR_NONE;
 }
 
-inline size_t lbWriterTell(const LB_Writer *writer) {
+#define lbWriterTell lbWriterPosition
+
+inline size_t lbWriterPosition(const LB_Writer *writer) {
     if (writer->_.mode == LB_WRITER_MODE_BUFFER) {
         return writer->_.buffer.position;
     }
 
     FILE *file = writer->_.file;
+#ifdef _LARGEFILE64_SOURCE
+    return ftello64(file);
+#else
     return ftell(file);
+#endif
+}
+
+inline size_t lbWriterLength(const LB_Writer *writer) {
+    if (writer->_.mode == LB_WRITER_MODE_BUFFER) {
+        return writer->_.buffer.length;
+    }
+
+    FILE *file = writer->_.file;
+#ifdef _LARGEFILE64_SOURCE
+    const off64_t position = ftello64(file);
+    fseeko64(file, 0, SEEK_END);
+    const off64_t end = ftello64(file);
+    fseeko64(file, position, SEEK_SET);
+    return end;
+#else
+    const long position = ftell(file);
+    fseek(file, 0, SEEK_END);
+    const long end = ftell(file);
+    fseek(file, position, SEEK_SET);
+    return end;
+#endif
+}
+
+inline size_t lbWriterRemaining(const LB_Writer *writer) {
+    return lbWriterLength(writer) - lbWriterPosition(writer);
 }
 
 inline LB_WriterError lbWriteUnsafe(LB_Writer *writer, const void *value, const size_t length) {

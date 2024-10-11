@@ -170,7 +170,6 @@ inline LB_ReaderMode lbReaderGetMode(const LB_Reader *reader) {
     return reader->_.mode;
 }
 
-
 inline LB_ReaderError lbReaderSeek(LB_Reader *reader, const size_t position) {
     if (reader->_.mode == LB_READER_MODE_BUFFER) {
         LB_ReaderBuffer *buffer = &reader->_.buffer;
@@ -190,13 +189,44 @@ inline LB_ReaderError lbReaderSeek(LB_Reader *reader, const size_t position) {
     return LB_READER_ERROR_NONE;
 }
 
-inline size_t lbReaderTell(const LB_Reader *reader) {
+#define lbReaderTell lbReaderPosition
+
+inline size_t lbReaderPosition(const LB_Reader *reader) {
     if (reader->_.mode == LB_READER_MODE_BUFFER) {
         return reader->_.buffer.position;
     }
 
     FILE *file = reader->_.file;
+#ifdef _LARGEFILE64_SOURCE
+    return ftello64(file);
+#else
     return ftell(file);
+#endif
+}
+
+inline size_t lbReaderLength(const LB_Reader *reader) {
+    if (reader->_.mode == LB_READER_MODE_BUFFER) {
+        return reader->_.buffer.length;
+    }
+
+    FILE *file = reader->_.file;
+#ifdef _LARGEFILE64_SOURCE
+    const off64_t position = ftello64(file);
+    fseeko64(file, 0, SEEK_END);
+    const off64_t end = ftello64(file);
+    fseeko64(file, position, SEEK_SET);
+    return end;
+#else
+    const long position = ftell(file);
+    fseek(file, 0, SEEK_END);
+    const long end = ftell(file);
+    fseek(file, position, SEEK_SET);
+    return end;
+#endif
+}
+
+inline size_t lbReaderRemaining(const LB_Reader *reader) {
+    return lbReaderLength(reader) - lbReaderPosition(reader);
 }
 
 inline LB_ReaderError lbReadUnsafe(LB_Reader *reader, void *out_value, const size_t length) {
@@ -261,27 +291,6 @@ inline LB_ReaderError lbReadReversed(LB_Reader *reader, void *out_value, const s
 #endif
 
     return lbReadReversedUnsafe(reader, out_value, length);
-}
-
-inline size_t lbReaderRemaining(const LB_Reader *reader) {
-    if (reader->_.mode == LB_READER_MODE_BUFFER) {
-        return reader->_.buffer.length - reader->_.buffer.position;
-    }
-
-    FILE *file = reader->_.file;
-#ifdef _LARGEFILE64_SOURCE
-    const off64_t position = ftello64(file);
-    fseeko64(file, 0, SEEK_END);
-    const off64_t end = ftello64(file);
-    fseeko64(file, position, SEEK_SET);
-    return end - position;
-#else
-    const long position = ftell(file);
-    fseek(file, 0, SEEK_END);
-    const long end = ftell(file);
-    fseek(file, position, SEEK_SET);
-    return end - position;
-#endif
 }
 
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
@@ -766,8 +775,9 @@ LB_ReaderError lbReadReversedUnsafe(LB_Reader *reader, void *out_value, size_t l
 
 LB_ReaderError lbReadReversed(LB_Reader *reader, void *out_value, size_t length);
 
-size_t lbReaderRemaining(const LB_Reader *reader);
+size_t lbReaderLength(const LB_Reader *reader);
 
+size_t lbReaderRemaining(const LB_Reader *reader);
 
 uint8_t lbReadU8(LB_Reader *reader, LB_ReaderError *out_error);
 

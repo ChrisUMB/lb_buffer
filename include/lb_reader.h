@@ -37,6 +37,40 @@ typedef enum LB_ReaderInitError {
     LB_READER_INIT_LENGTH_ZERO = 0x8,
 } LB_ReaderInitError;
 
+inline const char* lbReaderInitErrorName(const LB_ReaderInitError error) {
+    switch (error) {
+        case LB_READER_INIT_NONE:
+            return "LB_READER_INIT_NONE";
+        case LB_READER_INIT_DATA_NULL:
+            return "LB_READER_INIT_DATA_NULL";
+        case LB_READER_INIT_FILE_INVALID:
+            return "LB_READER_INIT_FILE_INVALID";
+        case LB_READER_INIT_NO_READER:
+            return "LB_READER_INIT_NO_READER";
+        case LB_READER_INIT_LENGTH_ZERO:
+            return "LB_READER_INIT_LENGTH_ZERO";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+inline const char* lbReaderInitErrorMessage(const LB_ReaderInitError error) {
+    switch (error) {
+        case LB_READER_INIT_NONE:
+            return "No error.";
+        case LB_READER_INIT_DATA_NULL:
+            return "The data is NULL.";
+        case LB_READER_INIT_FILE_INVALID:
+            return "The file could not be opened.";
+        case LB_READER_INIT_NO_READER:
+            return "The reader is NULL.";
+        case LB_READER_INIT_LENGTH_ZERO:
+            return "The length is zero.";
+        default:
+            return "An unknown error occurred.";
+    }
+}
+
 // Error codes for `lbRead` methods.
 typedef enum LB_ReaderError {
     // No error.
@@ -51,6 +85,40 @@ typedef enum LB_ReaderError {
     // The value is invalid.
     LB_READER_ERROR_INVALID_VALUE = 0x8,
 } LB_ReaderError;
+
+inline const char* lbReaderErrorName(const LB_ReaderError error) {
+    switch (error) {
+        case LB_READER_ERROR_NONE:
+            return "LB_READER_ERROR_NONE";
+        case LB_READER_ERROR_END:
+            return "LB_READER_ERROR_END";
+        case LB_READER_ERROR_READER_NULL:
+            return "LB_READER_ERROR_READER_NULL";
+        case LB_READER_ERROR_DATA_NULL:
+            return "LB_READER_ERROR_DATA_NULL";
+        case LB_READER_ERROR_INVALID_VALUE:
+            return "LB_READER_ERROR_INVALID_VALUE";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+inline const char* lbReaderErrorMessage(const LB_ReaderError error) {
+    switch (error) {
+        case LB_READER_ERROR_NONE:
+            return "No error.";
+        case LB_READER_ERROR_END:
+            return "The reader is at the end.";
+        case LB_READER_ERROR_READER_NULL:
+            return "The reader is NULL.";
+        case LB_READER_ERROR_DATA_NULL:
+            return "The data is NULL.";
+        case LB_READER_ERROR_INVALID_VALUE:
+            return "The value is invalid.";
+        default:
+            return "An unknown error occurred.";
+    }
+}
 
 // typedef struct LB_Reader {
 //     LB_ReaderMode mode;
@@ -755,6 +823,12 @@ inline double lbReadNI64BE(LB_Reader *reader, LB_ReaderError *out_error) {
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+const char* lbReaderInitErrorName(const LB_ReaderInitError error);
+const char* lbReaderInitErrorMessage(const LB_ReaderInitError error);
+const char* lbReaderErrorName(const LB_ReaderError error);
+const char* lbReaderErrorMessage(const LB_ReaderError error);
+
 LB_ReaderInitError lbReaderInitBuffer(LB_Reader *reader, const void *data, size_t length);
 
 LB_ReaderInitError lbReaderInitFile(LB_Reader *reader, FILE *file);

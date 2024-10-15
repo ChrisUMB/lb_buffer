@@ -15,10 +15,12 @@ extern "C" {
 #ifndef LB_WRITER_NO_SAFETY
 #define LB_WRITER_SAFETY
 #endif
+#include <stdlib.h>
 
 typedef enum LB_WriterMode {
-    LB_WRITER_MODE_BUFFER = 0,
-    LB_WRITER_MODE_FILE = 1,
+    LB_WRITER_MODE_BUFFER = 0x01,
+    LB_WRITER_MODE_FILE = 0x02,
+    LB_WRITER_MODE_DYNAMIC_BUFFER = 0x04,
 } LB_WriterMode;
 
 // Error codes for initializing a LB_Writer.
@@ -119,7 +121,7 @@ inline const char* lbWriterErrorMessage(const LB_WriterError e) {
 }
 
 typedef struct LB_WriterBuffer {
-    const void *data;
+    void *data;
     size_t length;
     size_t position;
 } LB_WriterBuffer;
@@ -212,15 +214,54 @@ inline LB_WriterInitError lbWriterInitFile(LB_Writer *writer, FILE *file) {
     return LB_WRITER_INIT_NONE;
 }
 
+inline LB_WriterInitError lbWriterInitDynamicBuffer(LB_Writer *writer, size_t initial_capacity) {
+    void* data = malloc(initial_capacity);
+    if(data == NULL) {
+        return LB_WRITER_INIT_DATA_NULL;
+    }
+
+    *writer = (LB_Writer) {
+        ._ = {
+            .mode = LB_WRITER_MODE_DYNAMIC_BUFFER | LB_WRITER_MODE_BUFFER,
+            .buffer = {
+                .data = data,
+                .length = initial_capacity,
+                .position = 0,
+            }
+        },
+    };
+    return LB_WRITER_INIT_NONE;
+}
+
+inline void lbWriterFree(LB_Writer *writer) {
+    if(writer->_.mode & LB_WRITER_MODE_DYNAMIC_BUFFER) {
+        free(writer->_.buffer.data);
+    }
+}
+
 #ifdef LB_WRITER_SAFETY
-inline LB_WriterError lbWriterCheckSafety(const LB_Writer *writer, const void *value, const size_t length) {
+inline LB_WriterError lbWriterCheckSafety(LB_Writer *writer, const void *value, const size_t length) {
     LB_WriterError e = LB_WRITER_ERROR_NONE;
     if (writer == NULL) {
         e |= LB_WRITER_ERROR_WRITER_NULL;
-    } else if(writer->_.mode == LB_WRITER_MODE_BUFFER) {
-        const LB_WriterBuffer *buffer = &writer->_.buffer;
+    } else if(writer->_.mode & LB_WRITER_MODE_BUFFER) {
+        LB_WriterBuffer *buffer = &writer->_.buffer;
         if (buffer->position + length > buffer->length) {
-            e |= LB_WRITER_ERROR_FULL;
+            if(writer->_.mode & LB_WRITER_MODE_DYNAMIC_BUFFER) {
+                size_t new_length = buffer->length * 2;
+                while(new_length < buffer->position + length) {
+                    new_length *= 2;
+                }
+                void* new_data = realloc(buffer->data, new_length);
+                if(new_data) {
+                    buffer->data = new_data;
+                    buffer->length = new_length;
+                } else {
+                    e |= LB_WRITER_ERROR_FULL;
+                }
+            } else {
+                e |= LB_WRITER_ERROR_FULL;
+            }
         }
 
         if (buffer->data == NULL) {
@@ -244,10 +285,24 @@ inline LB_WriterError lbWriterCheckSafety(const LB_Writer *writer, const void *v
 #endif
 
 inline LB_WriterError lbWriterSeek(LB_Writer *writer, const size_t position) {
-    if (writer->_.mode == LB_WRITER_MODE_BUFFER) {
+    if (writer->_.mode & LB_WRITER_MODE_BUFFER) {
         LB_WriterBuffer *buffer = &writer->_.buffer;
         if (position >= buffer->length) {
-            return LB_WRITER_ERROR_FULL;
+            if(writer->_.mode & LB_WRITER_MODE_DYNAMIC_BUFFER) {
+                size_t new_length = buffer->length * 2;
+                while(new_length < position) {
+                    new_length *= 2;
+                }
+                void* new_data = realloc(buffer->data, new_length);
+                if(new_data) {
+                    buffer->data = new_data;
+                    buffer->length = new_length;
+                } else {
+                    return LB_WRITER_ERROR_FULL;
+                }
+            } else {
+                return LB_WRITER_ERROR_FULL;
+            }
         }
 
         buffer->position = position;
@@ -265,7 +320,7 @@ inline LB_WriterError lbWriterSeek(LB_Writer *writer, const size_t position) {
 #define lbWriterTell lbWriterPosition
 
 inline size_t lbWriterPosition(const LB_Writer *writer) {
-    if (writer->_.mode == LB_WRITER_MODE_BUFFER) {
+    if (writer->_.mode & LB_WRITER_MODE_BUFFER) {
         return writer->_.buffer.position;
     }
 
@@ -278,7 +333,7 @@ inline size_t lbWriterPosition(const LB_Writer *writer) {
 }
 
 inline size_t lbWriterLength(const LB_Writer *writer) {
-    if (writer->_.mode == LB_WRITER_MODE_BUFFER) {
+    if (writer->_.mode & LB_WRITER_MODE_BUFFER) {
         return writer->_.buffer.length;
     }
 
@@ -303,7 +358,7 @@ inline size_t lbWriterRemaining(const LB_Writer *writer) {
 }
 
 inline LB_WriterError lbWriteUnsafe(LB_Writer *writer, const void *value, const size_t length) {
-    if(writer->_.mode == LB_WRITER_MODE_BUFFER) {
+    if(writer->_.mode & LB_WRITER_MODE_BUFFER) {
         LB_WriterBuffer *buffer = &writer->_.buffer;
         memcpy(((uint8_t *) buffer->data) + buffer->position, value, length);
         buffer->position += length;
@@ -328,7 +383,7 @@ inline LB_WriterError lbWrite(LB_Writer *writer, const void *value, const size_t
 }
 
 inline LB_WriterError lbWriteReversedUnsafe(LB_Writer *writer, const void *value, const size_t length) {
-    if(writer->_.mode == LB_WRITER_MODE_BUFFER) {
+    if(writer->_.mode & LB_WRITER_MODE_BUFFER) {
         LB_WriterBuffer *buffer = &writer->_.buffer;
         for (size_t i = 0; i < length; i++) {
             *((uint8_t *) buffer->data + buffer->position + i) = *((uint8_t *) value + length - 1 - i);
@@ -659,8 +714,11 @@ const char* lbWriterErrorMessage(const LB_WriterError e);
 
 LB_WriterInitError lbWriterInitBuffer(LB_Writer *writer, void *data, size_t length);
 LB_WriterInitError lbWriterInitFile(LB_Writer *writer, FILE *file);
+LB_WriterInitError lbWriterInitDynamicBuffer(LB_Writer *writer, size_t initial_capacity);
+void lbWriterFree(LB_Writer *writer);
+
 #ifdef LB_WRITER_SAFETY
-LB_WriterError lbWriterCheckSafety(const LB_Writer *writer, const void *value, size_t length);
+LB_WriterError lbWriterCheckSafety(LB_Writer *writer, const void *value, size_t length);
 #endif
 
 LB_WriterMode lbWriterGetMode(const LB_Writer *writer);

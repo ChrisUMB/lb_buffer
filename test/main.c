@@ -11,6 +11,18 @@
 #include <math.h>
 
 int main(int argc, char *argv[]) {
+    LB_Writer writer;
+    lbWriterInitDynamicBuffer(&writer, 8);
+
+    lbWriteF32(&writer, 3.14159265359f);
+    lbWriteF32(&writer, 2.71828182846f);
+    printf("%zu %zu\n", lbWriterPosition(&writer), lbWriterLength(&writer));
+    lbWriteF32(&writer, 1.41421356237f);
+    printf("%zu %zu\n", lbWriterPosition(&writer), lbWriterLength(&writer));
+    lbWriteF32(&writer, 1.73205080757f);
+    printf("%zu %zu\n", lbWriterPosition(&writer), lbWriterLength(&writer));
+}
+int mahin(int argc, char *argv[]) {
     // LB_Reader reader;
     // // FILE* file = fopen("test.bin", "rb");
     // // lbReadInitFile(&reader, file);
@@ -55,7 +67,7 @@ int main(int argc, char *argv[]) {
     fclose(file);
 }
 
-int mahin(int argc, char *argv[]) {
+int mahhin(int argc, char *argv[]) {
     LB_PagedArena *arena = lbPagedArenaNew(64);
     if (!arena) {
         printf("Failed to create paged arena\n");

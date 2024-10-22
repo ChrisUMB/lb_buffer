@@ -266,7 +266,11 @@ inline size_t lbReaderPosition(const LB_Reader *reader) {
 
     FILE *file = reader->_.file;
 #ifdef _LARGEFILE64_SOURCE
+#ifdef _MSC_VER
+    return _ftelli64(file);
+#else
     return ftello64(file);
+#endif
 #else
     return ftell(file);
 #endif
@@ -279,11 +283,19 @@ inline size_t lbReaderLength(const LB_Reader *reader) {
 
     FILE *file = reader->_.file;
 #ifdef _LARGEFILE64_SOURCE
+#ifdef _MSC_VER
+    const long long position = _ftelli64(file);
+    _fseeki64(file, 0, SEEK_END);
+    const long long end = _ftelli64(file);
+    _fseeki64(file, position, SEEK_SET);
+    return end;
+#else
     const off64_t position = ftello64(file);
     fseeko64(file, 0, SEEK_END);
     const off64_t end = ftello64(file);
     fseeko64(file, position, SEEK_SET);
     return end;
+#endif
 #else
     const long position = ftell(file);
     fseek(file, 0, SEEK_END);

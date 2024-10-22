@@ -51,7 +51,7 @@ static LB_PagedArenaPage *lbPagedArenaPageNew(size_t capacity) {
         return NULL;
     }
 
-    page->data = data + sizeof(LB_PagedArenaPage);
+    page->data = ((uint8_t*) data) + sizeof(LB_PagedArenaPage);
     page->capacity = capacity;
     page->length = 0;
     page->next = NULL;
@@ -135,7 +135,7 @@ void * lbPagedArenaAlloc(LB_PagedArena *arena, const size_t size) {
     }
 
     // Step 2: Allocate the memory in the page
-    void *ptr = page->data + page->length;
+    void *ptr = ((uint8_t*) page->data) + page->length;
     page->length += size;
     return ptr;
 }

@@ -386,7 +386,7 @@ inline LB_ReaderError lbReadReversed(LB_Reader *reader, void *out_value, const s
 #endif
 
 inline uint8_t lbReadU8(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint8_t result;
+    uint8_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -397,7 +397,7 @@ inline uint8_t lbReadU8(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint8_t lbReadU8LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint8_t result;
+    uint8_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -408,7 +408,7 @@ inline uint8_t lbReadU8LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint8_t lbReadU8BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint8_t result;
+    uint8_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -419,7 +419,7 @@ inline uint8_t lbReadU8BE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint16_t lbReadU16(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint16_t result;
+    uint16_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -430,7 +430,7 @@ inline uint16_t lbReadU16(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint16_t lbReadU16LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint16_t result;
+    uint16_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -441,7 +441,7 @@ inline uint16_t lbReadU16LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint16_t lbReadU16BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint16_t result;
+    uint16_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -452,7 +452,7 @@ inline uint16_t lbReadU16BE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint32_t lbReadU32(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint32_t result;
+    uint32_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -463,7 +463,7 @@ inline uint32_t lbReadU32(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint32_t lbReadU32LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint32_t result;
+    uint32_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -474,7 +474,7 @@ inline uint32_t lbReadU32LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint32_t lbReadU32BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint32_t result;
+    uint32_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -486,7 +486,7 @@ inline uint32_t lbReadU32BE(LB_Reader *reader, LB_ReaderError *out_error) {
 
 
 inline uint64_t lbReadU64(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint64_t result;
+    uint64_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -497,7 +497,7 @@ inline uint64_t lbReadU64(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint64_t lbReadU64LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint64_t result;
+    uint64_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -508,7 +508,7 @@ inline uint64_t lbReadU64LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline uint64_t lbReadU64BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    uint64_t result;
+    uint64_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -520,7 +520,7 @@ inline uint64_t lbReadU64BE(LB_Reader *reader, LB_ReaderError *out_error) {
 
 
 inline int8_t lbReadI8(LB_Reader *reader, LB_ReaderError *out_error) {
-    int8_t result;
+    int8_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -531,7 +531,7 @@ inline int8_t lbReadI8(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int8_t lbReadI8LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int8_t result;
+    int8_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -542,7 +542,7 @@ inline int8_t lbReadI8LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int8_t lbReadI8BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int8_t result;
+    int8_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -553,7 +553,7 @@ inline int8_t lbReadI8BE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int16_t lbReadI16(LB_Reader *reader, LB_ReaderError *out_error) {
-    int16_t result;
+    int16_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -564,7 +564,7 @@ inline int16_t lbReadI16(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int16_t lbReadI16LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int16_t result;
+    int16_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -575,7 +575,7 @@ inline int16_t lbReadI16LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int16_t lbReadI16BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int16_t result;
+    int16_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -586,7 +586,7 @@ inline int16_t lbReadI16BE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int32_t lbReadI32(LB_Reader *reader, LB_ReaderError *out_error) {
-    int32_t result;
+    int32_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -597,7 +597,7 @@ inline int32_t lbReadI32(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int32_t lbReadI32LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int32_t result;
+    int32_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -608,7 +608,7 @@ inline int32_t lbReadI32LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int32_t lbReadI32BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int32_t result;
+    int32_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -620,7 +620,7 @@ inline int32_t lbReadI32BE(LB_Reader *reader, LB_ReaderError *out_error) {
 
 
 inline int64_t lbReadI64(LB_Reader *reader, LB_ReaderError *out_error) {
-    int64_t result;
+    int64_t result = 0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -631,7 +631,7 @@ inline int64_t lbReadI64(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int64_t lbReadI64LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int64_t result;
+    int64_t result = 0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -642,7 +642,7 @@ inline int64_t lbReadI64LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline int64_t lbReadI64BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    int64_t result;
+    int64_t result = 0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -654,7 +654,7 @@ inline int64_t lbReadI64BE(LB_Reader *reader, LB_ReaderError *out_error) {
 
 
 inline float lbReadF32(LB_Reader *reader, LB_ReaderError *out_error) {
-    float result;
+    float result = 0.0f;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -665,7 +665,7 @@ inline float lbReadF32(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline float lbReadF32LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    float result;
+    float result = 0.0f;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -676,7 +676,7 @@ inline float lbReadF32LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline float lbReadF32BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    float result;
+    float result = 0.0f;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -688,7 +688,7 @@ inline float lbReadF32BE(LB_Reader *reader, LB_ReaderError *out_error) {
 
 
 inline double lbReadF64(LB_Reader *reader, LB_ReaderError *out_error) {
-    double result;
+    double result = 0.0;
     const LB_ReaderError error = lbRead(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -699,7 +699,7 @@ inline double lbReadF64(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline double lbReadF64LE(LB_Reader *reader, LB_ReaderError *out_error) {
-    double result;
+    double result = 0.0;
     const LB_ReaderError error = lbReadLE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
@@ -710,7 +710,7 @@ inline double lbReadF64LE(LB_Reader *reader, LB_ReaderError *out_error) {
 }
 
 inline double lbReadF64BE(LB_Reader *reader, LB_ReaderError *out_error) {
-    double result;
+    double result = 0.0;
     const LB_ReaderError error = lbReadBE(reader, &result, sizeof(result));
 #ifdef LB_READER_SAFETY
     if (out_error != NULL) {
